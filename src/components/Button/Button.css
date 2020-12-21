@@ -2,3 +2,59 @@
   box-sizing: border-box;
   cursor: pointer;
 }
+
+.button_cursor_not-allowed{
+  cursor: not-allowed;
+}
+
+.button_type_hamburger {
+
+}
+
+.button_type_tooltip {
+  padding: 14px 11px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 12px;
+  background-color: #fff;
+}
+
+.button_type_marked {
+  margin: 0 0 5px 5px ;
+  max-width: 40px;
+  width: 100%;
+  min-height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: url('../../images/marked.svg') no-repeat center/24px #fff;
+}
+
+.button_type_favorite {
+  margin: 0 0 5px 5px ;
+  max-width: 40px;
+  width: 100%;
+  min-height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: url('../../images/normal.svg') no-repeat center/24px #fff;
+}
+
+.button_type_favorite:hover {
+  background: url('../../images/hover.svg') no-repeat center/24px #fff;
+}
+
+.button_type_trash {
+  margin: 0 0 5px 5px ;
+  max-width: 40px;
+  width: 100%;
+  min-height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: url('../../images/trash-normal.svg') no-repeat center/24px #fff;
+}
+
+.button_type_trash:hover {
+  background: url('../../images/trash-hover.svg') no-repeat center/24px #fff;
+}

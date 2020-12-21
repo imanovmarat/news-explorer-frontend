@@ -1,24 +1,58 @@
 import React from "react";
 import './NewsCard.css';
 import Button from "../Button/Button";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import pathImg from '../../images/photo-1607969092427-2669db678ebe.jpeg';
 
-function NewsCard() {
+function NewsCard(props) {
+  const location = useLocation();
+  const path = location.pathname;
+
+  const [button, setButton] = React.useState('');
+  const [button2, setButton2] = React.useState('');
+
+  const handleTooltipLoginOpen = () => {
+    setButton(<Button className="button_type_tooltip">Войдите, чтобы сохранять статьи</Button>);
+  }
+
+  const handleTooltipLoginClose = () => {
+    setButton('');
+  }
+
+  const handleTooltipRemoveFromFavoritesOpen = () => {
+    setButton2(<Button className="button_type_tooltip">Убрать из сохранённых</Button>);
+  }
+
+  const handleTooltipRemoveFromFavoritesClose = () => {
+    setButton2('');
+  }
+
   return (
     <article className="card">
-
-      <div className="card__buttons-and-tag-wrapper">
-        <p className="card__tag">Погода</p>
-        <div className="card__buttons-wrapper">
-          <Button className="card__signin-button">Войдите, чтобы сохранять статьи</Button>
-          <Button className="card__toggle-favorite-button">
-            <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11.38 15.71L6 19.94V4h12v15.94l-5.38-4.23-.62-.48-.62.48z" stroke="#B6BCBF" strokeWidth="2"/>
-            </svg>
-          </Button>
-        </div>
-      </div>
+      { path === '/'
+        ? <div className="card__buttons-and-tag-wrapper">
+            <p className="card__tag">Погода</p>
+            <div className="card__buttons-wrapper">
+              {!props.marked && button}
+              <Button
+                className={ props.marked ? "button_type_marked" : "button_type_favorite button_cursor_not-allowed" }
+                onMouseEnter={handleTooltipLoginOpen}
+                onMouseLeave={handleTooltipLoginClose}
+              />
+            </div>
+          </div>
+        : <div className="card__buttons-and-tag-wrapper">
+            <p className="card__tag">Погода</p>
+            <div className="card__buttons-wrapper">
+              {button2}
+              <Button
+                className="button_type_trash"
+                onMouseEnter={handleTooltipRemoveFromFavoritesOpen}
+                onMouseLeave={handleTooltipRemoveFromFavoritesClose}
+              />
+            </div>
+          </div>
+      }
 
       <Link to="#" className="card__img-wrapper">
         <img src={pathImg} alt="описание" className="card__img" width="400" height="272"/>

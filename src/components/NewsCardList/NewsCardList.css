@@ -1,11 +1,17 @@
 .cardList {
   background-color: #F5F6F7;
-  padding: 80px 104px;
+  padding: 62px 104px 80px;
 }
 
 @media screen and (max-width: 770px) {
   .cardList {
-    padding: 40px;
+    padding: 32px 40px 40px;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .cardList {
+    padding: 24px 16px 32px;
   }
 }
 
@@ -21,15 +27,21 @@
   font-weight: normal;
   font-size: 40px;
   line-height: 46px;
-  padding: 0 0 64px;
+  padding: 18px 0 64px;
   margin: 0;
 }
 
 @media screen and (max-width: 770px) {
   .cardList__title {
-    padding: 0 0 30px;
+    padding: 8px 0 32px;
     font-size: 30px;
     line-height: 34px;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .cardList__title {
+    padding: 8px 0 24px;
   }
 }
 
@@ -39,16 +51,16 @@
   grid-gap: 16px;
 }
 
-/*@media screen and (max-width: 1050px) {
-  .cardList__cards {
-    grid-template-columns: repeat(2, minmax(224px, 400px));
-    grid-gap: 16px;
-  }
-}*/
-
 @media screen and (max-width: 770px) {
   .cardList__cards {
     grid-gap: 8px;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .cardList__cards {
+    grid-gap: 10px;
+    grid-template-columns: 1fr;
   }
 }
 
@@ -69,6 +81,14 @@
 @media screen and (max-width: 770px) {
   .cardList__button {
     margin: 32px auto 0;
+    padding: 15px 60px 17px;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .cardList__button {
+    width: 100%;
+    margin: 16px auto 0;
     padding: 15px 60px 17px;
   }
 }

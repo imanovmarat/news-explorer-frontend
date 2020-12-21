@@ -3,7 +3,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: url(../../images/georgia-de-lotz--UsJoNxLaNo-unsplash.jpg) center/cover no-repeat;
+  background: url('../../images/georgia-de-lotz--UsJoNxLaNo-unsplash.jpg') center/cover no-repeat;
+}
+
+@media screen and (max-width: 770px) {
+  .lead {
+    background: url('../../images/size-m-georgia-de-lotz--UsJoNxLaNo-unsplash.jpg') center/cover no-repeat;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .lead {
+    background: url('../../images/size-s-georgia-de-lotz--UsJoNxLaNo-unsplash.jpg') center/cover no-repeat;
+  }
 }
 
 .lead__heading {
@@ -24,6 +36,13 @@
   }
 }
 
+@media screen and (max-width: 540px) {
+  .lead__container {
+    max-width: 100%;
+    padding: 0 16px;
+  }
+}
+
 .lead__title {
   margin: 160px 0 32px;
   font-family: Roboto Slab;
@@ -41,6 +60,14 @@
   }
 }
 
+@media screen and (max-width: 540px) {
+  .lead__title {
+    margin: 86px 0 16px;
+    padding-left: 3px;
+    max-width: 100%;
+  }
+}
+
 .lead__subtitle {
   max-width: 545px;
   margin: 0 0 64px;
@@ -50,6 +77,12 @@
 @media screen and (max-width: 770px) {
   .lead__subtitle {
     margin: 0 0 48px;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .lead__subtitle {
+    margin: 0 0 122px;
   }
 }
 
@@ -69,8 +102,21 @@
 
 @media screen and (max-width: 770px) {
   .lead__search-form {
-    margin-bottom: 48px;
-    height: 56px;
+    /*margin-bottom: 48px;*/
+    /*height: 56px;*/
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .lead__search-form {
+    border-radius: unset;
+    border: none;
+    height: auto;
+    padding: 0;
+    background-color: transparent;
+    margin-bottom: 32px;
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 
@@ -81,7 +127,19 @@
   width: 100%;
   max-width: 376px;
   margin:0 40px 0 0;
-  outline: none;
+  /*outline: none;*/
+}
+.lead__input::placeholder {
+  color: #B6BCBF;
+}
+@media screen and (max-width: 540px) {
+  .lead__input {
+    flex-basis: 56px;
+    border-radius: 100px;
+    padding: 0 16px;
+    margin: 0 0 16px 0;
+    max-width: none;
+  }
 }
 
 .lead__button {
@@ -99,6 +157,18 @@
 @media screen and (max-width: 770px) {
   .lead__button {
     max-width: 160px;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .lead__button {
+    flex-basis: 56px;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 500;
+    max-width: none;
+    margin: 0;
+    align-self: auto;
   }
 }
 
