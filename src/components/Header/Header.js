@@ -4,7 +4,7 @@ import './Header.css';
 import Button from "../Button/Button";
 import {Link, NavLink, Route, useLocation} from "react-router-dom";
 
-function Header({ OpenSignInPopup }) {
+function Header({ OpenSignInPopup, isSomeonePopupOpen }) {
   const location = useLocation();
   const path = location.pathname;
 
@@ -25,7 +25,7 @@ function Header({ OpenSignInPopup }) {
     <header className={ `header ${path === '/' || isOpenMenu  ? "header_text-color_white" : ""}` }>
       <nav className={`header__wrapper ${isOpenMenu ? "header__wrapper_background_dark" : ""}`}>
         <Link to="/" className="header__title">NewsExplorer</Link>
-        { menuButton }
+        { !isSomeonePopupOpen && menuButton }
         <ul className={ isOpenMenu ? "header__links header__links_show" : "header__links" }>
           <li className="header__link-wrapper">
             <NavLink onClick={handleCloseMenu}  exact to="/" className="header__link" activeClassName="header__link_active">Главная</NavLink>
@@ -34,7 +34,12 @@ function Header({ OpenSignInPopup }) {
             <NavLink onClick={handleCloseMenu} to="/saved-news" className="header__link" activeClassName="header__link_active">Сохранённые статьи</NavLink>
           </li>
           <Route exact path="/">
-            <Button className="header_button" onClick={OpenSignInPopup}>Авторизоваться</Button>
+            <Button className="header_button" onClick={
+              () => {
+                handleCloseMenu();
+                OpenSignInPopup();
+              }
+            }>Авторизоваться</Button>
           </Route>
           <Route path='/saved-news'>
             <Button className="header_button">

@@ -77,10 +77,17 @@ function PopupWithForm({
     onClose(e);
   }
 
+  function handleOutsideClickClose(evt) {
+    console.log(evt.target)
+    if (evt.target === evt.currentTarget) {
+      resetStates(evt);
+    }
+  }
+
   return(
     <section className={ `popup ${isOpen && 'popup_opened'}` }>
-      <div className="popup__container">
-        <div className="popup__body">
+      <div className="popup__container" onClick={handleOutsideClickClose}>
+        <div className="popup__body" >
           <button className="popup__button_type_close" onClick={resetStates} />
           <form className="popup__form" name={formName} onSubmit={onSubmit} noValidate>
             <fieldset className="popup__wrapper">

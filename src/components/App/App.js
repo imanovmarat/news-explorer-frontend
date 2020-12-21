@@ -14,6 +14,16 @@ function App() {
   const [isSignInPopupOpen, setSignInPopupOpen] = React.useState(false);
   const [isSignUpPopupOpen, setSignUpPopupOpen] = React.useState(false);
 
+  const [isSomeonePopupOpen, setIsSomeonePopupOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isSignInPopupOpen || isSignUpPopupOpen) {
+      setIsSomeonePopupOpen(true);
+    } else {
+      setIsSomeonePopupOpen(false);
+    }
+  }, [isSignInPopupOpen, isSignUpPopupOpen])
+
   const OpenSignInPopup = () => {
     closeAllPopups();
     console.log('функция открытия попапа с авторизацией')
@@ -31,9 +41,24 @@ function App() {
     setSignUpPopupOpen(false);
   }
 
+  // Закрытие попапов при нажатии Esc
+
+  React.useEffect(() => {
+    function handleEscClose(evt) {
+      if (evt.key === 'Escape') {
+        closeAllPopups();
+      }
+    }
+
+    document.addEventListener('keydown', handleEscClose);
+
+    return () => document.removeEventListener('keydown', handleEscClose);
+
+  },[])
+
   return (
     <div className="app">
-      <Header OpenSignInPopup={ OpenSignInPopup }/>
+      <Header OpenSignInPopup={ OpenSignInPopup } isSomeonePopupOpen={isSomeonePopupOpen}/>
       <main className="app__content">
         <Switch>
           <Route exact path="/">
