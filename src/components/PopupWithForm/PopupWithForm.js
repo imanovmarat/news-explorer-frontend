@@ -13,8 +13,8 @@ function PopupWithForm({
                          alterButtonText,
                          openAnotherPopup,
                          nameInputValidation=true,
-                         setNameErrorMessage = '',
-                         setNameInputValue = ''
+                         setNameErrorMessage,
+                         setNameInputValue
                        }) {
 
   const [emailInputValue, setEmailInputValue] = React.useState('');
@@ -66,12 +66,14 @@ function PopupWithForm({
   },[isEmailValid, isPasswordValid, nameInputValidation]);
 
   function resetStates(e) {
+    if (setNameErrorMessage) {
+      setNameErrorMessage('');
+      setNameInputValue('');
+    }
     setEmailInputValue('');
     setPasswordInputValue('');
     setEmailErrorMessage('');
     setPasswordErrorMessage('');
-    setNameErrorMessage('');
-    setNameInputValue('');
     onClose(e);
   }
 
