@@ -15,7 +15,9 @@ function Footer() {
               <Link to="/" className="footer__link">Главная</Link>
             </li>
             <li className="footer__menu-item">
-              <a href="https://praktikum.yandex.ru/" target="_blank" rel="noreferrer" className="footer__link">Яндекс Практикум</a>
+              <a href="https://praktikum.yandex.ru/" target="_blank" rel="noreferrer" className="footer__link">
+                Яндекс Практикум
+              </a>
             </li>
           </ul>
         </nav>

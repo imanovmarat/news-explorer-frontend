@@ -11,7 +11,7 @@ function SearchForm() {
         <p className="lead__subtitle">Находите самые свежие статьи на любую тему и сохраняйте в своём личном кабинете.</p>
         <form className="lead__search-form" action="#">
           <input className="lead__input" type="search" placeholder="Введите тему новости"/>
-          <Button className="lead__button">Искать</Button>
+          <Button type="search">Искать</Button>
         </form>
       </div>
     </section>

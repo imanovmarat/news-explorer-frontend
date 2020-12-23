@@ -1,9 +1,9 @@
 import React from "react";
 import './Button.css';
 
-function Button(props) {
+function Button({ type = 'default', children, ...rest }) {
   return (
-    <button {...props} className={`button ${props.className}`} type="button">{props.children}</button>
+    <button {...rest} className={`button button_type_${type}`}>{ children }</button>
   )
 }
 

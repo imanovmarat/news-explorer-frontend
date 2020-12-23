@@ -81,7 +81,7 @@
   margin: 53px 0 0;
   max-width: 496px;
   display: block;
-  font-family: Roboto Slab;
+  font-family: Roboto Slab, Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 40px;
@@ -100,7 +100,7 @@
   margin: 24px 0 0;
   min-width: 288px;
   max-width: 600px;
-  font-family: Roboto;
+  font-family: Roboto, Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 18px;

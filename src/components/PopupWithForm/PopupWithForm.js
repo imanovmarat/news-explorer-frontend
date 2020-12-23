@@ -1,6 +1,8 @@
 import React from "react";
 import './PopupWithForm.css'
 import { isEmail } from 'validator';
+import Button from "../Button/Button";
+import CloseIcon from "../Icons/CloseIcon";
 
 function PopupWithForm({
                          formName,
@@ -88,7 +90,8 @@ function PopupWithForm({
     <section className={ `popup ${isOpen && 'popup_opened'}` }>
       <div className="popup__container" onClick={handleOutsideClickClose}>
         <div className="popup__body" >
-          <button className="popup__button_type_close" onClick={resetStates} />
+          <Button type="close-popup" onClick={resetStates} ><CloseIcon width="100%" height="100%"/></Button>
+          {/*<button className="popup__button_type_close" onClick={resetStates} />*/}
           <form className="popup__form" name={formName} onSubmit={onSubmit} noValidate>
             <fieldset className="popup__wrapper">
               <legend className="popup__title">{ title }</legend>
