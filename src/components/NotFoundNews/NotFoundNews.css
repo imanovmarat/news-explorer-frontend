@@ -1,0 +1,50 @@
+.notFoundNews {
+  background-color: #F5F6F7;
+  padding: 62px 104px 80px;
+}
+
+@media screen and (max-width: 770px) {
+  .notFoundNews {
+    padding: 32px 40px 40px;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .notFoundNews {
+    padding: 24px 16px 32px;
+  }
+}
+
+.notFoundNews__container {
+  margin: 0 auto;
+  max-width: 1232px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #F5F6F7;
+  padding: 62px 104px 80px;
+}
+
+
+.cardList__not-found-icon {
+  margin-top: 18px;
+}
+
+.notFoundNews__not-fount-title {
+  margin: 24px 0 0;
+  font-family: Roboto Slab, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 26px;
+  line-height: 30px;
+}
+
+.notFoundNews__not-fount-text {
+  margin: 16px 0 0;
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 24px;
+  color: #B6BCBF;
+}

@@ -7,7 +7,7 @@ import MenuIcon from "../Icons/MenuIcon";
 import CloseIcon from "../Icons/CloseIcon";
 import SignOut from "../Icons/SignOut";
 
-function Header({ OpenSignInPopup, isSomeonePopupOpen }) {
+function Header({isAuthorized, OpenSignInPopup, isSomeonePopupOpen }) {
   const location = useLocation();
   const path = location.pathname;
 
@@ -47,9 +47,12 @@ function Header({ OpenSignInPopup, isSomeonePopupOpen }) {
           <li className="header__link-wrapper">
             <NavLink onClick={handleCloseMenu}  exact to="/" className="header__link" activeClassName="header__link_active">Главная</NavLink>
           </li>
-          <li className="header__link-wrapper">
-            <NavLink onClick={handleCloseMenu} to="/saved-news" className="header__link" activeClassName="header__link_active">Сохранённые статьи</NavLink>
+          { isAuthorized &&
+            <li className="header__link-wrapper">
+            <NavLink onClick={handleCloseMenu} to="/saved-news" className="header__link"
+                     activeClassName="header__link_active">Сохранённые статьи</NavLink>
           </li>
+          }
           <Route exact path="/">
             <Button type="inside-menu" onClick={() => {
                 handleCloseMenu();
