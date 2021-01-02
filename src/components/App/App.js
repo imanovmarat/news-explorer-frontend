@@ -1,130 +1,95 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import './App.css';
 import Header from "../Header/Header";
-import Preloader from "../Preloader/Preloader";
-import SearchForm from "../SearchForm/SearchForm";
-import NewsCardList from "../NewsCardList/NewsCardList";
 import About from "../About/About";
 import Footer from "../Footer/Footer";
-import SavedNews from "../SavedNews/SavedNews";
-import SignInPopup from "../SignInPopup/SignInPopup";
-import SingUpPopup from "../SingUpPopup/SingUpPopup";
+import Login from "../Login/Login";
+import Register from "../Register/Register";
+import * as NewsAuth from "../../utils/NewsAuth";
 import newsApi from "../../utils/NewsApi";
 import mainApi from "../../utils/MainApi";
-import NotFoundNews from "../NotFoundNews/NotFoundNews";
+import Main from "../Main/Main";
+import SavedNews from "../SavedNews/SavedNews";
+import MessagePopup from "../MessagePopup/MessagePopup";
+import {CurrentUserContext} from "../../contexts/CurrentUserContext";
+import {ProtectedRoute} from "../ProtectedRoute/ProtectedRoute";
 
 function App() {
-  const [loggedIn, setLoggedIn] = React.useState(true);
-  const [ user, setUser ] = React.useState({});
-  const [ isLoading, setIsLoading ] = React.useState(true);
-  const [ news, setNews ] = React.useState(null);
-  const [ searchRequest, setSearchRequest ] = React.useState('');
-  const [ word, setWord ] = React.useState('')
-  const [isSignInPopupOpen, setSignInPopupOpen] = React.useState(false);
-  const [isSignUpPopupOpen, setSignUpPopupOpen] = React.useState(false);
+  const [loggedIn, setLoggedIn] = React.useState(false);
+  const [currentUser, setCurrentUser] = React.useState({});
+  const [ isLoading, setIsLoading ] = React.useState(false);
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = React.useState(false);
+  const [isRegisterPopupOpen, setIsRegisterPopupOpen] = React.useState(false);
+  const [isMessagePopupOpen, setMessagePopupOpen] = React.useState(false);
   const [isSomeonePopupOpen, setIsSomeonePopupOpen] = React.useState(false);
 
-  //TODO Переделать useEffect
-  React.useEffect(() => {
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmU3NGQ0MjMyN2M5NTVmOTFiOWM3YzgiLCJpYXQiOjE2MDg5OTUxNDksImV4cCI6MTYwOTU5OTk0OX0.uKSauaRpFOnV_hHXkP1pG2UNDjx0alyFk-2-cbOGWMQ';
-    mainApi.getUserInfo({token})
-      .then(res => {
-        console.log(res);
-        setUser(res)
-      });
-  },[]);
+  const history = useHistory();
 
-  function addToFavorites({ keyword, title, text, date, source, link, image }) {
+  const removeFromFavorites = (_id) => {
     const token = localStorage.getItem('token');
-    return mainApi.addNews({keyword, title, text, date, source, link, image, token})
+    return mainApi.removeNews( _id , { token } )
   }
 
-
-  function handleSearchInputChange(e) {
-    setWord(e.target.value);
+  const getUserData = ({ token }) => {
+    mainApi.getUserInfo({ token })
+      .then(res => {
+        console.log(res)
+        localStorage.setItem('user', JSON.stringify(res));
+        setCurrentUser(res)
+      })
   }
 
   React.useEffect(() => {
-    setIsLoading(true);
-    if (getFromLocalStorage()) {
-      const { news, keyword } = getFromLocalStorage();
-      setNews(news);
-      setWord(keyword);
-      setSearchRequest(keyword);
-      setIsLoading(false);
+    const token = localStorage.getItem('token');
+    if (token) {
+      NewsAuth.tokenCheck({ token })
+        .then((res) => {
+          getUserData({token});
+          setLoggedIn(true);
+          console.log(res);
+        })
     }
+
   },[]);
 
-  function handleSubmitSearch (word) {
-    console.log(word)
-    setSearchRequest(word);
+  function onSignOut(){
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setLoggedIn(false);
+    setCurrentUser({});
+    history.push('/');
   }
-
-
-  function setToLocalStorage ({ news, keyword}) {
-    localStorage.setItem('searchRequest', JSON.stringify({
-      news,
-      keyword
-    }));
-  }
-
-  function getFromLocalStorage () {
-    const localStorageData = JSON.parse(localStorage.getItem('searchRequest'));
-    if (localStorageData) return {
-      news: localStorageData.news,
-      keyword: localStorageData.keyword
-    }
-    return null;
-  }
-
 
   React.useEffect(() => {
-    if (searchRequest !== '' ) {
-      setIsLoading(true);
-      newsApi.getNews({token: 'f5cacb5effc8473ea9c1c56ae5a59a6e', keyword: searchRequest}) /*214c27292b164ac8a0014a5c58108939*/
-        .then(res => {
-          console.log(res.articles)
-          setNews(res.articles);
-          setToLocalStorage({
-            news: res.articles,
-            keyword: searchRequest
-          });
-          setIsLoading(false);
-        })
-        .catch(err => {
-          setIsLoading(false);
-          setNews([]);
-          localStorage.removeItem('searchRequest');
-          console.error('вот дерьмо');
-          console.error(err);
-        });
-    }
-  },[searchRequest]);
-
-  React.useEffect(() => {
-    if (isSignInPopupOpen || isSignUpPopupOpen) {
+    if (isLoginPopupOpen || isRegisterPopupOpen || isMessagePopupOpen) {
       setIsSomeonePopupOpen(true);
     } else {
       setIsSomeonePopupOpen(false);
     }
-  }, [isSignInPopupOpen, isSignUpPopupOpen])
+  }, [isLoginPopupOpen, isRegisterPopupOpen, isMessagePopupOpen])
 
-  const OpenSignInPopup = () => {
+  const OpenLoginPopup = () => {
     closeAllPopups();
     console.log('функция открытия попапа с авторизацией')
-    setSignInPopupOpen(true);
+    setIsLoginPopupOpen(true);
   }
 
-  const OpenSignUpPopup = () => {
+  const OpenRegisterPopup = () => {
     closeAllPopups();
     console.log('Функция открытия рег попапа')
-    setSignUpPopupOpen(true);
+    setIsRegisterPopupOpen(true);
+  }
+  const OpenMessagePopup = () => {
+    closeAllPopups();
+    console.log('Функция открытия рег попапа')
+    setMessagePopupOpen(true);
   }
 
   const closeAllPopups = () => {
-    setSignInPopupOpen(false);
-    setSignUpPopupOpen(false);
+    setIsLoginPopupOpen(false);
+    setIsRegisterPopupOpen(false);
+    setMessagePopupOpen(false);
   }
 
   // Закрытие попапов при нажатии Esc
@@ -142,46 +107,49 @@ function App() {
 
   },[])
 
-  const renderContent = (news, isLoading) => {
-    if (news !== null) {
-      if (isLoading) return <Preloader />
-      if (news.length === 0) return <NotFoundNews />
-      return <NewsCardList searchRequest={searchRequest} isAuthorized={loggedIn} news={news} addToFavorites={addToFavorites} />
-    }
-  }
 
   return (
-    <div className="app">
-      <Header
-        isAuthorized={loggedIn}
-        OpenSignInPopup={ OpenSignInPopup }
-        isSomeonePopupOpen={isSomeonePopupOpen}
-      />
-      <main className="app__content">
-        <Switch>
-          <Route exact path="/">
-            <SearchForm onSubmit={handleSubmitSearch} onChange={handleSearchInputChange} word={word}/>
-            { renderContent(news, isLoading) }
-            <About />
-          </Route>
-          <Route path='/saved-news'>
-            <SavedNews />
-            <NewsCardList/>
-          </Route>
-        </Switch>
-      </main>
-      <Footer />
-      <SignInPopup
-        isOpen={isSignInPopupOpen}
-        onClose={closeAllPopups}
-        OpenSignUpPopup={OpenSignUpPopup}
-      />
-      <SingUpPopup
-        isOpen={isSignUpPopupOpen}
-        onClose={closeAllPopups}
-        OpenSignInPopup={OpenSignInPopup} />
-    </div>
+    <CurrentUserContext.Provider value={currentUser}>
+      <div className="app">
+        <Header
+          loggedIn={loggedIn}
+          OpenSignInPopup={ OpenLoginPopup }
+          isSomeonePopupOpen={isSomeonePopupOpen}
+          onClickSignOut={onSignOut}
+        />
+        <main className="app__content">
+          <Switch>
+            <Route exact path="/">
+              <Main isLoading={isLoading} setIsLoading={setIsLoading} loggedIn={loggedIn}
+                    removeFromFavorites={removeFromFavorites}/>
+              <About />
+            </Route>
+            <ProtectedRoute path='/saved-news' loggedIn={loggedIn} OpenSignInPopup={OpenLoginPopup} component={SavedNews}
+                            isLoading={isLoading} setIsLoading={setIsLoading} removeFromFavorites={removeFromFavorites}
+            />
+          </Switch>
+        </main>
+        <Footer />
+        <Login
+          isOpen={isLoginPopupOpen}
+          onClose={closeAllPopups}
+          OpenSignUpPopup={OpenRegisterPopup}
+          setLoggedIn={setLoggedIn}
+          getUserData={getUserData}
+        />
+        <Register
+          isOpen={isRegisterPopupOpen}
+          onClose={closeAllPopups}
+          OpenSignInPopup={OpenLoginPopup}
+          OpenMessagePopup={OpenMessagePopup}
+        />
 
+        <MessagePopup
+          isOpen={isMessagePopupOpen}
+          onClose={closeAllPopups}
+          OpenSignInPopup={OpenLoginPopup}/>
+      </div>
+    </CurrentUserContext.Provider>
   );
 }
 

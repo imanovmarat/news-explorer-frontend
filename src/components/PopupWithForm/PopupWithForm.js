@@ -16,7 +16,9 @@ function PopupWithForm({
                          openAnotherPopup,
                          nameInputValidation=true,
                          setNameErrorMessage,
-                         setNameInputValue
+                         setNameInputValue,
+                         submitError,
+                         setSubmitErrorMessage
                        }) {
 
   const [emailInputValue, setEmailInputValue] = React.useState('');
@@ -76,14 +78,26 @@ function PopupWithForm({
     setPasswordInputValue('');
     setEmailErrorMessage('');
     setPasswordErrorMessage('');
-    onClose(e);
+    setSubmitErrorMessage('');
+    setIsEmailValid(false);
+    setIsPasswordValid(false);
+    setIsFormValid(false);
+    onClose();
   }
 
   function handleOutsideClickClose(evt) {
-    console.log(evt.target)
     if (evt.target === evt.currentTarget) {
       resetStates(evt);
     }
+  }
+
+  function handleSubmit(e) {
+    setSubmitErrorMessage('');
+    e.preventDefault();
+    onSubmit({
+      email: emailInputValue,
+      password: passwordInputValue
+    })
   }
 
   return(
@@ -92,7 +106,7 @@ function PopupWithForm({
         <div className="popup__body" >
           <Button type="close-popup" onClick={resetStates} ><CloseIcon width="100%" height="100%"/></Button>
           {/*<button className="popup__button_type_close" onClick={resetStates} />*/}
-          <form className="popup__form" name={formName} onSubmit={onSubmit} noValidate>
+          <form className="popup__form" name={formName} onSubmit={handleSubmit} noValidate>
             <fieldset className="popup__wrapper">
               <legend className="popup__title">{ title }</legend>
               <div className="popup__field-wrapper">
@@ -110,7 +124,7 @@ function PopupWithForm({
               </div>
               { children }
             </fieldset>
-            <span className='popup__form-error'>Такой пользователь существует</span>
+            <span className='popup__form-error'>{ submitError }</span>
             <button className="popup__submit-button" type="submit" disabled={!isFormValid}>{ buttonText }</button>
             <span className="popup__change-popup-text">
               или <button className="popup__change-popup-button" type="button" onClick={openAnotherPopup}>{ alterButtonText}</button>

@@ -16,7 +16,8 @@ export const singUp = ({ email, password, name }) => {
       if(res.ok){
         return res.json();
       }
-      return Promise.reject('Ошибка запроса на регистрацию ');
+      return res.json().then(err => Promise.reject(err.message))
+      // return Promise.reject( 'Ошибка запроса на регистрацию ');
     })
     .then((res) => res);
 }
@@ -36,7 +37,8 @@ export const singIn = ({ email, password }) => {
       if(res.ok){
         return res.json();
       }
-      return Promise.reject('Ошибка запроса на аутентификацию ');
+      return res.json().then(err => Promise.reject(err.message))
+      // return Promise.reject('Ошибка запроса на аутентификацию ');
     })
     .then((res) => res);
 }

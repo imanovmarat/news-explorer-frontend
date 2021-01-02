@@ -1,11 +1,17 @@
 import React from "react";
 import PopupWithForm from "../PopupWithForm/PopupWithForm";
+import * as NewsAuth from "../../utils/NewsAuth";
 
 
-function SingUpPopup({ isOpen, onClose, OpenSignInPopup }) {
+function Register({ isOpen, onClose, OpenSignInPopup, OpenMessagePopup }) {
   const [nameInputValue, setNameInputValue] = React.useState('');
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
   const [isNameValid, setIsNameValid] = React.useState(false);
+  const [submitErrorMessage, setSubmitErrorMessage] = React.useState('');
+
+  React.useEffect(() => {
+    setSubmitErrorMessage('');
+  }, [])
 
   function handleNameChange(e) {
     checkName(e.target.value);
@@ -22,10 +28,16 @@ function SingUpPopup({ isOpen, onClose, OpenSignInPopup }) {
     }
   }
 
-  function submitSignUpForm (e) {
+  function submitSignUpForm ({ email, password }) {
     console.log('Форма регистрации отправлена')
-    onClose();
-    e.preventDefault();
+    NewsAuth.singUp({ email, password, name: nameInputValue })
+      .then(res => {
+        OpenMessagePopup();
+        setSubmitErrorMessage('');
+      })
+      .catch(err => {
+        setSubmitErrorMessage(err);
+      })
   }
 
   return (
@@ -41,6 +53,8 @@ function SingUpPopup({ isOpen, onClose, OpenSignInPopup }) {
       title="Регистрация"
       buttonText="Зарегистрироваться"
       alterButtonText="Войти"
+      submitError={ submitErrorMessage }
+      setSubmitErrorMessage={setSubmitErrorMessage}
     >
         <div className="popup__field-wrapper">
           <label className="popup__field-title" htmlFor="signup-name-input" >Имя</label>
@@ -52,4 +66,4 @@ function SingUpPopup({ isOpen, onClose, OpenSignInPopup }) {
   )
 }
 
-export default SingUpPopup;
+export default Register;

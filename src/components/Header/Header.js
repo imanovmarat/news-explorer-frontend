@@ -1,17 +1,18 @@
 import React from "react";
 import './Header.css';
-
 import Button from "../Button/Button";
 import {Link, NavLink, Route, useLocation} from "react-router-dom";
 import MenuIcon from "../Icons/MenuIcon";
 import CloseIcon from "../Icons/CloseIcon";
 import SignOut from "../Icons/SignOut";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
-function Header({isAuthorized, OpenSignInPopup, isSomeonePopupOpen }) {
+function Header({loggedIn, OpenSignInPopup, isSomeonePopupOpen, onClickSignOut }) {
   const location = useLocation();
   const path = location.pathname;
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const currentUser = React.useContext(CurrentUserContext);
 
   const defineHeaderClass = (path, isMenuOpen) => {
     if (path === '/' || isMenuOpen) return 'header header_text_white';
@@ -24,6 +25,7 @@ function Header({isAuthorized, OpenSignInPopup, isSomeonePopupOpen }) {
 
   const defineSignOutFill = (isMenuOpen) => {
     if (isMenuOpen) return '#fff';
+    if (path === '/')return '#fff'
   }
 
   const handleCloseMenu = () => {
@@ -47,23 +49,24 @@ function Header({isAuthorized, OpenSignInPopup, isSomeonePopupOpen }) {
           <li className="header__link-wrapper">
             <NavLink onClick={handleCloseMenu}  exact to="/" className="header__link" activeClassName="header__link_active">Главная</NavLink>
           </li>
-          { isAuthorized &&
-            <li className="header__link-wrapper">
+
+          { loggedIn &&
+          <li className="header__link-wrapper">
             <NavLink onClick={handleCloseMenu} to="/saved-news" className="header__link"
                      activeClassName="header__link_active">Сохранённые статьи</NavLink>
           </li>
           }
-          <Route exact path="/">
-            <Button type="inside-menu" onClick={() => {
-                handleCloseMenu();
-                OpenSignInPopup();
-              }}>
+
+          { loggedIn
+            ? <Button type="inside-menu" onClick={onClickSignOut} >{ currentUser.name }<SignOut fill={defineSignOutFill(isMenuOpen)} /></Button>
+            : <Button type="inside-menu" onClick={() => {
+              handleCloseMenu();
+              OpenSignInPopup();
+            }}>
               Авторизоваться
             </Button>
-          </Route>
-          <Route path='/saved-news'>
-            <Button type="inside-menu">Грета<SignOut fill={defineSignOutFill(isMenuOpen)} /></Button>
-          </Route>
+          }
+
         </ul>
       </nav>
     </header>

@@ -69,7 +69,7 @@ class MainApi {
   }
 
   removeNews(newsId,{token}) {
-    return fetch(`${this._baseUrl}/articles/${newsId}`, {
+    return fetch(`${this._baseUrl}/articles/${ newsId }`, {
       method: 'DELETE',
       headers: {
         ...this._headers,

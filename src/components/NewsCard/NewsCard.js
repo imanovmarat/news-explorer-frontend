@@ -5,19 +5,18 @@ import { Route } from "react-router-dom";
 import FavoriteIcon from "../Icons/FavoriteIcon";
 import TrashIcon from "../Icons/TrashIcon";
 
-const NewsCard = React.memo(( { searchRequest, addToFavorites, isAuthorized, cardData }, props) => {
-
+const NewsCard = ({ cardData, handleIconClick, tooltipData }) => {
   const [isWindowWidthSmall, setIsWindowWidthSmall] = React.useState(false);
+  const [ tooltip, setTooltip ] = React.useState();
+  const [ iconType, setIconType ] = React.useState('normal');
 
-  const phrase = cardData.description || cardData.text;
-  const phraseSub = phrase.length < 80 ? phrase :  phrase.substring(0, 80) + '...';
+
+  /* ------------- Слушатель для определения ширина окна ------------- */
 
   React.useEffect((() => {
-
     function updateScreenWidth() {
       if(window.innerWidth < 770) return setIsWindowWidthSmall(true);
       return setIsWindowWidthSmall(false);
-
     }
 
     window.addEventListener('resize', updateScreenWidth);
@@ -26,101 +25,63 @@ const NewsCard = React.memo(( { searchRequest, addToFavorites, isAuthorized, car
 
   }),[]);
 
-
-
-  const [ authTooltip, setAuthTooltip ] = React.useState('');
-  const [ removeTooltip, setRemoveTooltip ] = React.useState('');
-  const [ iconType, setIconType ] = React.useState('normal');
-  const [ trashType, setTrashType ] = React.useState('#B6BCBF');
-  const [ isNewsSaved, setIsNewsSaved ] = React.useState(false);
+  /* ------------- Отлеживание наведение курсора ------------- */
 
   const mouseEnter = () => {
-    !isAuthorized && setAuthTooltip(<p className="card__tooltip">Войдите, чтобы сохранять статьи</p>);
+    setTooltip(tooltipData);
     setIconType('hover');
   }
 
   const mouseLeave = () => {
-    !isAuthorized && setAuthTooltip('');
+    setTooltip();
     setIconType('normal');
   }
 
-  const handleTooltipRemoveFromFavoritesOpen = () => {
-    setRemoveTooltip(<p className="card__tooltip">Убрать из сохранённых</p>);
-    setTrashType('#1A1B22');
+  function handleClick() {
+    handleIconClick(cardData);
   }
 
-  const handleTooltipRemoveFromFavoritesClose = () => {
-    setRemoveTooltip('');
-    setTrashType('#B6BCBF');
-  }
+  const currentCard = React.useMemo(() => {
+    const phrase = cardData.text;
+    const phraseSub = phrase.length < 80 ? phrase :  phrase.substring(0, 80) + '...';
+    return  <article className="card">
+                <div className="card__buttons-and-tag-wrapper">
+                  <Route path='/saved-news'>
+                    <p className="card__tag">{ cardData.keyword }</p>
+                  </Route>
+                  <div className="card__buttons-wrapper">
+                      { tooltip }
+                      <Button type="card-action" onMouseEnter={ mouseEnter } onMouseLeave={ mouseLeave } onClick={handleClick} >
+                        <Route exact path="/">
+                          <FavoriteIcon type={ cardData._id ? 'marked' : iconType } />
+                        </Route>
+                        <Route path='/saved-news'>
+                          <TrashIcon type={ iconType }/>
+                        </Route>
+                      </Button>
+                  </div>
+                </div>
 
-  const handleAddToFavoritesClick = () => {
-    if (!isAuthorized) return;
-    addToFavorites({
-      keyword: searchRequest,
-      title: cardData.title,
-      text: cardData.description,
-      date: cardData.publishedAt.slice(0, 10),
-      source: cardData.source.name,
-      link: cardData.url,
-      image: cardData.urlToImage
-    })
-      .then(res => {
-      console.log('заебок, сохранена');
-      console.log(res);
-        setIsNewsSaved(true);
-    })
-      .catch(err => {
-        console.error('бля, не сохранена');
-        console.error(err);
-        setIsNewsSaved(false);
-      });
-  }
+              <div className="card__img-wrapper">
+                <img src={ cardData.image || 'https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg' } alt={ cardData.title } className="card__img" width="400" height="272"/>
+              </div>
+
+              <div className="card__content">
+                <span className="card__date">{ cardData.date.slice(0, 10)}</span>
+                <a className="card__title" href={ cardData.link } rel="noreferrer" target='_blank'>{ Math.random() }</a>
+                <p className="card__text" >
+                  { isWindowWidthSmall ? phraseSub : phrase }
+                </p>
+                <a className="card__source" href={ cardData.link } rel="noreferrer" target='_blank'>{ cardData.source }</a>
+              </div>
+
+            </article>
+
+  }, [cardData, iconType, isWindowWidthSmall])
 
   return (
-    <article className="card">
-      <Route exact path="/">
-        <div className="card__buttons-and-tag-wrapper">
-          <div className="card__buttons-wrapper">
-            {!isAuthorized && authTooltip}
-            <Button type="card-action" onMouseEnter={ !isNewsSaved ? mouseEnter : undefined} onMouseLeave={!isNewsSaved ? mouseLeave : undefined} onClick={handleAddToFavoritesClick}>
-              <FavoriteIcon type={ isNewsSaved ? 'marked' : iconType}/>
-            </Button>
-          </div>
-        </div>
-      </Route>
-      <Route path='/saved-news'>
-        <div className="card__buttons-and-tag-wrapper">
-          <p className="card__tag">{ cardData.keyword }</p>
-          <div className="card__buttons-wrapper">
-            {removeTooltip}
-            <Button
-              type="card-action"
-              onMouseEnter={handleTooltipRemoveFromFavoritesOpen}
-              onMouseLeave={handleTooltipRemoveFromFavoritesClose}
-            >
-              <TrashIcon fill={ trashType }/>
-            </Button>
-
-          </div>
-        </div>
-      </Route>
-
-      <div className="card__img-wrapper">
-        <img src={ cardData.urlToImage || cardData.image } alt="Фотография дороги" className="card__img" width="400" height="272"/>
-      </div>
-
-      <div className="card__content">
-        <span className="card__date">{ cardData.publishedAt.slice(0, 10) || cardData.date}</span>
-        <a className="card__title" href={ cardData.url || cardData.link } rel="noreferrer" target='_blank'>{ cardData.title }</a>
-        <p className="card__text" >
-          { isWindowWidthSmall ? phraseSub : phrase }
-        </p>
-        <a className="card__source" href={ cardData.url || cardData.link } rel="noreferrer" target='_blank'>{ cardData.source.name }</a>
-      </div>
-
-    </article>
+    currentCard
   )
-})
+}
 
 export default NewsCard;
