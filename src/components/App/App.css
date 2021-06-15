@@ -1,0 +1,14 @@
+.app {
+  position: relative;
+  color: #1A1B22;
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 24px;
+  min-width: 320px;
+}
+
+.app__content {
+
+}
