@@ -93,6 +93,9 @@
   border: 1px solid #D1D2D6;
   border-radius: 100px;
   padding: 12px 15px 15px 19px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 @media screen and (max-width: 770px) {

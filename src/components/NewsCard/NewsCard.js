@@ -1,23 +1,22 @@
 import React from "react";
 import './NewsCard.css';
 import Button from "../Button/Button";
-import {Link, Route} from "react-router-dom";
-import pathImg from '../../images/photo-1607969092427-2669db678ebe.jpeg';
+import { Route } from "react-router-dom";
 import FavoriteIcon from "../Icons/FavoriteIcon";
 import TrashIcon from "../Icons/TrashIcon";
 
-function NewsCard(props) {
+const NewsCard = ({ cardData, handleIconClick, tooltipData }) => {
+  const [isWindowWidthSmall, setIsWindowWidthSmall] = React.useState(false);
+  const [ tooltip, setTooltip ] = React.useState();
+  const [ iconType, setIconType ] = React.useState('normal');
 
-  const [windowWidth, setWindowWidth] = React.useState(0);
 
-  const phrase = ' В 2016 году Америка отмечала важный юбилей: сто лет назад здесь начала складываться система национальных парков – охраняемых территорий, где и сегодня каждый может приобщиться к природе.';
-  const phraseSub = phrase.substring(0, 80) + '...';
+  /* ------------- Слушатель для определения ширина окна ------------- */
 
   React.useEffect((() => {
-
     function updateScreenWidth() {
-      setWindowWidth(window.innerWidth);
-
+      if(window.innerWidth < 770) return setIsWindowWidthSmall(true);
+      return setIsWindowWidthSmall(false);
     }
 
     window.addEventListener('resize', updateScreenWidth);
@@ -26,82 +25,62 @@ function NewsCard(props) {
 
   }),[]);
 
-
-
-  const [authTooltip, setAuthTooltip] = React.useState('');
-  const [removeTooltip, setRemoveTooltip] = React.useState('');
-  const [IconType, setIconType] = React.useState('normal');
-  const [trashType, setTrashType] = React.useState('#B6BCBF');
+  /* ------------- Отлеживание наведение курсора ------------- */
 
   const mouseEnter = () => {
-    setAuthTooltip(<p className="card__tooltip">Войдите, чтобы сохранять статьи</p>);
+    setTooltip(tooltipData);
     setIconType('hover');
   }
 
   const mouseLeave = () => {
-    setAuthTooltip('');
+    setTooltip();
     setIconType('normal');
   }
 
-  const handleTooltipRemoveFromFavoritesOpen = () => {
-    setRemoveTooltip(<p className="card__tooltip">Убрать из сохранённых</p>);
-    setTrashType('#1A1B22');
+  function handleClick() {
+    handleIconClick(cardData);
   }
 
-  const handleTooltipRemoveFromFavoritesClose = () => {
-    setRemoveTooltip('');
-    setTrashType('#B6BCBF');
-  }
+  const currentCard = React.useMemo(() => {
+    const phrase = cardData.text;
+    const phraseSub = phrase.length < 80 ? phrase :  phrase.substring(0, 80) + '...';
+    return  <article className="card">
+                <div className="card__buttons-and-tag-wrapper">
+                  <Route path='/saved-news'>
+                    <p className="card__tag">{ cardData.keyword }</p>
+                  </Route>
+                  <div className="card__buttons-wrapper">
+                      { tooltip }
+                      <Button type="card-action" onMouseEnter={ mouseEnter } onMouseLeave={ mouseLeave } onClick={handleClick} >
+                        <Route exact path="/">
+                          <FavoriteIcon type={ cardData._id ? 'marked' : iconType } />
+                        </Route>
+                        <Route path='/saved-news'>
+                          <TrashIcon type={ iconType }/>
+                        </Route>
+                      </Button>
+                  </div>
+                </div>
 
-  const defineIconType = (marked) => {
-    if (marked) return "marked";
-    return IconType;
-  }
+              <div className="card__img-wrapper">
+                <img src={ cardData.image || 'https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg' } alt={ cardData.title } className="card__img" width="400" height="272"/>
+              </div>
+
+              <div className="card__content">
+                <span className="card__date">{ cardData.date.slice(0, 10)}</span>
+                <a className="card__title" href={ cardData.link } rel="noreferrer" target='_blank'>{ Math.random() }</a>
+                <p className="card__text" >
+                  { isWindowWidthSmall ? phraseSub : phrase }
+                </p>
+                <a className="card__source" href={ cardData.link } rel="noreferrer" target='_blank'>{ cardData.source }</a>
+              </div>
+
+            </article>
+
+  }, [cardData, iconType, isWindowWidthSmall])
 
   return (
-    <article className="card">
-      <Route exact path="/">
-        <div className="card__buttons-and-tag-wrapper">
-          <p className="card__tag">Погода</p>
-          <div className="card__buttons-wrapper">
-            {!props.marked && authTooltip}
-            <Button type="card-action" onMouseEnter={mouseEnter} onMouseLeave={mouseLeave}>
-              <FavoriteIcon type={defineIconType(props.marked)}/>
-            </Button>
-          </div>
-        </div>
-      </Route>
-      <Route path='/saved-news'>
-        <div className="card__buttons-and-tag-wrapper">
-          <p className="card__tag">Погода</p>
-          <div className="card__buttons-wrapper">
-            {removeTooltip}
-            <Button
-              type="card-action"
-              onMouseEnter={handleTooltipRemoveFromFavoritesOpen}
-              onMouseLeave={handleTooltipRemoveFromFavoritesClose}
-            >
-              <TrashIcon fill={ trashType }/>
-            </Button>
-
-          </div>
-        </div>
-      </Route>
-
-      <Link to="#" className="card__img-wrapper">
-        <img src={pathImg} alt="Фотография дороги" className="card__img" width="400" height="272"/>
-      </Link>
-
-      <div className="card__content">
-        <span className="card__date">2 августа, 2019</span>
-        <Link className="card__title" to="#">Национальное достояние – парки</Link>
-        <p className="card__text" >
-          { windowWidth < 770 ? phraseSub : phrase }
-        </p>
-        <Link to="#" className="card__source">Дзен</Link>
-      </div>
-
-    </article>
+    currentCard
   )
 }
 

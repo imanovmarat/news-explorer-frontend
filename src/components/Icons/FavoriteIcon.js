@@ -18,9 +18,7 @@ function FavoriteIcon({type='normal', width = 24, height = 24 }) {
   }
 
   return (
-    <>
-    { icon }
-    </>
+    icon
   )
 }
 

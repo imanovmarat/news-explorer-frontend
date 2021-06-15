@@ -1,6 +1,12 @@
 import React from 'react';
 
-function TrashIcon({ width = 24, height = 24, fill = '#B6BCBF' }) {
+function TrashIcon({type='normal', width = 24, height = 24 }) {
+  let fill;
+  if ( type === 'normal') {
+    fill =  '#B6BCBF'
+  } else if ( type === 'hover') {
+    fill =  '#1A1B22'
+  }
 
   return (
     <svg width={width} height={height} fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Иконка с изобажением корзины">
